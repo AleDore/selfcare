@@ -304,6 +304,15 @@
             </dependencies>
         </profile>
         <profile>
+            <id>libs</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>../libs</module>
+            </modules>
+        </profile>
+        <profile>
             <id>report</id>
             <build>
                 <plugins>
