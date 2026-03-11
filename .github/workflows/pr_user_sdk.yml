@@ -1,4 +1,4 @@
-name: Code Review Libs
+name: Code Review - User SDK
 
 on:
   workflow_dispatch:
@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - main
+      - releases/**
     types:
       - opened
       - edited
@@ -13,22 +14,18 @@ on:
       - reopened
       - ready_for_review
     paths:
-      - 'libs/**'
-      - '!libs/user-sdk-**/**'
-      - '.github/workflows/pr_libs.yml'
+      - 'libs/user-sdk-**/**'
+      - '.github/workflows/pr_user_sdk.yml'
       - '.github/workflows/call_code_review.yml'
 
 jobs:
-
   code_review:
-    permissions:
-      packages: read
     uses: ./.github/workflows/call_code_review.yml
-    name: Libs Code Review
+    name: User SDK Code Review
     secrets: inherit
     with:
       pr_number: ${{ github.event.pull_request.number }}
       source_branch: ${{ github.head_ref }}
       target_branch: ${{ github.base_ref }}
       sonar_key: 'pagopa_selfcare'
-      module: 'libs'
+      module: 'user-sdk'
