@@ -1,0 +1,49 @@
+name: Code Review - User SDK
+
+permissions:
+  contents: read
+  pull-requests: read
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches:
+      - main
+      - releases/**
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - 'libs/user-sdk-**/**'
+      - '.github/workflows/pr_user_sdk.yml'
+
+jobs:
+  build:
+    name: Build & Test User SDK
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Setup Maven settings
+        uses: s4u/maven-settings-action@v2.8.0
+        with:
+          servers: '[{"id": "selfcare", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+
+      - name: Build and Test
+        working-directory: libs
+        run: mvn clean verify --projects user-sdk-event,user-sdk-model --also-make
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
