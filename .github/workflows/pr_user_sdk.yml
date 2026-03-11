@@ -37,6 +37,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Setup Maven settings
+        uses: s4u/maven-settings-action@v2.8.0
+        with:
+          servers: '[{"id": "selfcare", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+
       - name: Build and Test
         working-directory: libs
         run: mvn clean verify --projects user-sdk-event,user-sdk-model --also-make
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
